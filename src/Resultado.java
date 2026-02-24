@@ -1,18 +1,19 @@
 public enum Resultado {
-    VITORIA(3), 
-    DERROTA(0), 
-    EMPATE(1);
-    
+
+    VITORIA(3),  // Vitória vale 3 pontos
+    EMPATE(1),   // Empate vale 1 ponto
+    DERROTA(0);  // Derrota vale 0 pontos
+
     private int pontuacao;
+    // Guarda quantos pontos aquele resultado vale
+
     private Resultado(int pontuacao) {
+        // Construtor do enum
         this.pontuacao = pontuacao;
     }
-    
-    public void setPontuacao(int nova_pontuacao) {
-        this.pontuacao = nova_pontuacao;
-    }
-    
+
     public int getPontuacao() {
-        return this.pontuacao;
+        // Retorna a pontuação associada ao resultado
+        return pontuacao;
     }
 }

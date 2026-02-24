@@ -1,5 +1,6 @@
 public enum StatusPartida {
-    AGENDADA, 
-    EM_ANDAMENTO, 
-    CONCLUIDA
+
+    AGENDADA,     // Partida criada mas ainda não começou
+    EM_ANDAMENTO, // Partida acontecendo
+    CONCLUIDA     // Partida finalizada
 }
