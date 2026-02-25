@@ -1,6 +1,8 @@
 package model;
 
+import exception.CampeonatoRuntimeException;
 import exception.PartidaJaEncerradaException;
+import exception.PenaltisEmpatadadosException;
 
 import java.time.LocalDate;
 
@@ -14,9 +16,11 @@ public class Partida {
     private int golsTime1;
     private int golsTime2;
     private StatusPartida status;
+    private boolean foiParaPenaltis;
+    private int golsPenaltisTime1;
+    private int golsPenaltisTime2;
 
     public Partida(Time time1, Time time2, int rodada, LocalDate dataRodada) {
-
         this.time1 = time1;
         this.time2 = time2;
         this.rodada = rodada;
@@ -24,6 +28,7 @@ public class Partida {
         this.local = time1.getEstadio(); // O estádio será o do mandante
         this.status = StatusPartida.AGENDADA;
     }
+
 
     public void encerrarPartida(int gols1, int gols2) {
         if (status == StatusPartida.CONCLUIDA) {
@@ -36,7 +41,46 @@ public class Partida {
         time1.registrarPartida(gols1, gols2);
         time2.registrarPartida(gols2, gols1);
 
+        if (golsTime1 != golsTime2) {
+            this.status = StatusPartida.CONCLUIDA; // tem vencedor, encerra
+        } else {
+            this.status = StatusPartida.EM_ANDAMENTO; // empate, aguarda pênaltis
+        }
+    }
+
+    public void encerrarPenaltis(int gols1,int gols2) throws PenaltisEmpatadadosException {
+        if (status != StatusPartida.EM_ANDAMENTO){
+            throw new CampeonatoRuntimeException("Partida finalizada sem penaltis.");
+        }
+        if (golsTime1 != golsTime2){
+            throw new CampeonatoRuntimeException("Partida não necessita de penaltis");
+        }
+        if(golsPenaltisTime1 == golsPenaltisTime2){
+            throw new PenaltisEmpatadadosException("Penaltis empatados, continue a cobrança");
+        }
+        this.golsPenaltisTime1 = gols1;
+        this.golsPenaltisTime2 = gols2;
+
+        foiParaPenaltis = true;
         this.status = StatusPartida.CONCLUIDA;
+    }
+    public Time getVencedor(){
+        if (status != StatusPartida.CONCLUIDA){
+            throw new PartidaJaEncerradaException("Partida ainda não foi encerrada.");
+        }
+        if (foiParaPenaltis){
+            if (golsPenaltisTime1>golsPenaltisTime2){
+                return time1;
+            }else {
+                return time2;
+            }
+        }else {
+            if (golsTime1 > golsTime2) {
+                return time1;
+            } else {
+                return time2;
+            }
+        }
     }
 
     public StatusPartida getStatus() {

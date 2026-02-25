@@ -11,6 +11,7 @@ public class CampeonatoPontosCorridos extends Campeonato {
         super(nome, diasDeDescanso, dataDeInicio);
     }
 
+    @Override
     public void gerarConfrontos() throws TimesInsuficientesException{
         if (times.size() < 4){
             throw new TimesInsuficientesException("Minimo de 4 times para o campeonato.");
