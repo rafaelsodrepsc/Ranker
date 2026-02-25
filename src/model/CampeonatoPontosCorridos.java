@@ -1,5 +1,7 @@
-public class Liga extends Campeonato {
-    // A classe Liga herda de Campeonato.
+package model;
+
+public class CampeonatoPontosCorridos extends Campeonato {
+    // A classe model.CampeonatoPontosCorridos herda de model.Campeonato.
     // Isso significa que ela já possui:
     // - A lista de times (times)
     // - A lista de partidas (confrontos)
@@ -52,7 +54,7 @@ public class Liga extends Campeonato {
     // ---------------------------------------------------------
     public Time campeao() {
 
-        // Cria um objeto Tabela usando a lista atual de times
+        // Cria um objeto model.Tabela usando a lista atual de times
         Tabela tabela = new Tabela(times);
 
         // Ordena os times de acordo com os critérios:
@@ -67,7 +69,7 @@ public class Liga extends Campeonato {
 
     // ---------------------------------------------------------
     // METODO QUE RETORNA O MELHOR ATAQUE
-    // (Time que fez mais gols)
+    // (model.Time que fez mais gols)
     // ---------------------------------------------------------
     public Time melhorAtaque() {
 
@@ -91,7 +93,7 @@ public class Liga extends Campeonato {
 
     // ---------------------------------------------------------
     // METODO QUE RETORNA A MELHOR DEFESA
-    // (Time que sofreu menos gols)
+    // (model.Time que sofreu menos gols)
     // ---------------------------------------------------------
     public Time melhorDefesa() {
 
