@@ -2,14 +2,14 @@ package model;
 
 public class Time {
 
-    private String nome;       // Nome do time
+    private final String nome;       // Nome do time
     private int pontos;        // Total de pontos na tabela
     private int vitorias;      // Quantidade de vitórias
     private int empates;       // Quantidade de empates
     private int derrotas;      // Quantidade de derrotas
     private int golsPro;       // Gols marcados
     private int golsContra;    // Gols sofridos
-    private Local estadio;     // Estádio próprio do time
+    private final Local estadio;     // Estádio próprio do time
 
     public Time(String nome, Local estadio) {
         // Construtor do time
@@ -20,24 +20,22 @@ public class Time {
 
     public void registrarPartida(int golsFeitos, int golsSofridos) {
         // Metodo chamado quando o time termina uma partida
-
         golsPro += golsFeitos;       // Soma gols marcados
         golsContra += golsSofridos;  // Soma gols sofridos
 
         if (golsFeitos > golsSofridos) {
             // Se fez mais gols → vitória
             vitorias++;
-            pontos += Resultado.VITORIA.getPontuacao();
+            pontos += 3;
         }
         else if (golsFeitos == golsSofridos) {
             // Se fez igual número de gols → empate
             empates++;
-            pontos += Resultado.EMPATE.getPontuacao();
+            pontos += 1;
         }
         else {
             // Se fez menos gols → derrota
             derrotas++;
-            pontos += Resultado.DERROTA.getPontuacao();
         }
     }
 

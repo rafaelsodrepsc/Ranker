@@ -1,31 +1,49 @@
 package model;
 
+import exception.TimeJaCadastradoException;
+import exception.TimesInsuficientesException;
+
+import java.time.LocalDate;
 import java.util.List;              // Importa a interface List
 import java.util.ArrayList;         // Importa a implementação ArrayList
 
 public abstract class Campeonato {  // Classe abstrata (não pode ser instanciada diretamente)
 
     protected List<Partida> confrontos = new ArrayList<>();
-    // Lista que armazena todas as partidas do campeonato
-
-    protected List<Local> locais_dos_confrontos = new ArrayList<>();
-    // Lista com todos os estádios utilizados
-
+    protected List<Local> locais= new ArrayList<>();
     protected List<Time> times = new ArrayList<>();
-    // Lista com todos os times participantes
+    protected String nome;
+    protected LocalDate dataDeInicio;
+    protected int diasDeDescanso;
+
+    public Campeonato(String nome, int diasDeDescanso, LocalDate dataDeInicio) {
+        this.nome = nome;
+        this.diasDeDescanso = diasDeDescanso;
+        this.dataDeInicio = dataDeInicio;
+    }
 
     public void adicionarTime(Time time) {
-        // Metodo para adicionar um time ao campeonato
+        boolean jaExiste = times.stream()
+                .anyMatch(t -> t.getNome().equals(time.getNome()));
+        if(jaExiste){
+            throw new TimeJaCadastradoException("Time ja cadastrado no campeonato");
+        }
         times.add(time);
     }
-
-    public List<Time> getTimes() {
-        // Retorna a lista de times
-        return times;
+    public void adicionarLocal(Local local){
+        locais.add(local);
     }
+    public abstract void gerarConfrontos() throws TimesInsuficientesException;
 
-    public List<Partida> getConfrontos() {
-        // Retorna a lista de partidas
-        return confrontos;
-    }
+    public List<Local> getLocais() {return locais;}
+
+    public String getNome() {return nome;}
+
+    public LocalDate getDataDeInicio() {return dataDeInicio;}
+
+    public int getDiasDeDescanso() {return diasDeDescanso;}
+
+    public List<Time> getTimes() {return times;}
+
+    public List<Partida> getConfrontos() {return confrontos;}
 }

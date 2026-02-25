@@ -1,52 +1,21 @@
 package model;
 
+import exception.TimesInsuficientesException;
+
+import java.time.LocalDate;
+
 public class CampeonatoPontosCorridos extends Campeonato {
-    // A classe model.CampeonatoPontosCorridos herda de model.Campeonato.
-    // Isso significa que ela já possui:
-    // - A lista de times (times)
-    // - A lista de partidas (confrontos)
-    // Ela representa a fase de pontos corridos.
+    public CampeonatoPontosCorridos(String nome, int diasDeDescanso, LocalDate dataDeInicio) {
+        super(nome, diasDeDescanso, dataDeInicio);
+    }
 
-    // ---------------------------------------------------------
-    // METODO RESPONSÁVEL POR GERAR TODOS OS CONFRONTOS
-    // ---------------------------------------------------------
-    public void gerarConfrontos() {
-
-        // Primeiro laço percorre todos os times da lista
-        for (int i = 0; i < times.size(); i++) {
-
-            // Segundo laço começa sempre depois do i
-            // Isso evita repetir confrontos.
-            // Exemplo: se já fez A x B, não fará B x A aqui.
-            for (int j = i + 1; j < times.size(); j++) {
-
-                // Pega o time da posição i
-                Time timeA = times.get(i);
-
-                // Pega o time da posição j
-                Time timeB = times.get(j);
-
-                // -----------------------------
-                // JOGO DE IDA
-                // -----------------------------
-                // timeA será o mandante
-                // O estádio usado será o do timeA
-                Partida ida = new Partida(timeA, timeB, null);
-
-                // Adiciona o jogo de ida na lista de confrontos
-                confrontos.add(ida);
-
-                // -----------------------------
-                // JOGO DE VOLTA
-                // -----------------------------
-                // Agora invertemos o mando de campo
-                // timeB será o mandante
-                Partida volta = new Partida(timeB, timeA, null);
-
-                // Adiciona o jogo de volta
-                confrontos.add(volta);
-            }
+    public void gerarConfrontos() throws TimesInsuficientesException{
+        if (times.size() < 4){
+            throw new TimesInsuficientesException("Minimo de 4 times para o campeonato.");
         }
+
+        //Algoritmo Round Robin de torneios - comumente usado na criação de pontos corridos
+
     }
 
     // ---------------------------------------------------------
@@ -91,10 +60,6 @@ public class CampeonatoPontosCorridos extends Campeonato {
         return melhor;
     }
 
-    // ---------------------------------------------------------
-    // METODO QUE RETORNA A MELHOR DEFESA
-    // (model.Time que sofreu menos gols)
-    // ---------------------------------------------------------
     public Time melhorDefesa() {
 
         // Assume inicialmente que o primeiro time é a melhor defesa

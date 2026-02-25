@@ -1,46 +1,42 @@
 package model;
 
-import java.time.LocalDate; // Importa classe de data
+import exception.PartidaJaEncerradaException;
+
+import java.time.LocalDate;
 
 public class Partida {
 
-    private StatusPartida status;    // Situação da partida
-    private Time time1;              // Mandante
-    private Time time2;              // Visitante
-    private LocalDate dataDaPartida; // Data do jogo
-    private Local localDaPartida;    // Estádio do jogo
-    private int golsTime1;           // Gols do mandante
-    private int golsTime2;           // Gols do visitante
+    private final Time time1;              // Mandante
+    private final Time time2;              // Visitante
+    private final int rodada;
+    private final Local local;
+    private final LocalDate dataRodada;
+    private int golsTime1;
+    private int golsTime2;
+    private StatusPartida status;
 
-    public Partida(Time time1, Time time2, LocalDate data) {
-        // Construtor da partida
+    public Partida(Time time1, Time time2, int rodada, LocalDate dataRodada) {
 
-        this.time1 = time1;                 // Define mandante
-        this.time2 = time2;                 // Define visitante
-        this.dataDaPartida = data;          // Define data
-        this.localDaPartida = time1.getEstadio();
-        // O estádio será o do mandante
-
+        this.time1 = time1;
+        this.time2 = time2;
+        this.rodada = rodada;
+        this.dataRodada = dataRodada;
+        this.local = time1.getEstadio(); // O estádio será o do mandante
         this.status = StatusPartida.AGENDADA;
-        // Começa como agendada
     }
 
     public void encerrarPartida(int gols1, int gols2) {
-
         if (status == StatusPartida.CONCLUIDA) {
-            // Evita que a partida seja encerrada duas vezes
-            return;
+            throw new  PartidaJaEncerradaException("Partida ja encerrada!! ");
         }
 
-        this.golsTime1 = gols1;  // Define gols do mandante
-        this.golsTime2 = gols2;  // Define gols do visitante
+        this.golsTime1 = gols1;
+        this.golsTime2 = gols2;
 
-        // Atualiza estatísticas dos times
         time1.registrarPartida(gols1, gols2);
         time2.registrarPartida(gols2, gols1);
 
         this.status = StatusPartida.CONCLUIDA;
-        // Marca a partida como concluída
     }
 
     public StatusPartida getStatus() {
@@ -55,13 +51,23 @@ public class Partida {
         return time2;
     }
 
+    public int getRodada(){return rodada;}
+
+    public Local getLocal() {return local;}
+
+    public LocalDate getDataRodada() {return dataRodada;}
+
+    public int getGolsTime1() {return golsTime1;}
+
+    public int getGolsTime2() {return golsTime2;}
+
     @Override
     public String toString() {
-        // Representação textual da partida
-        return dataDaPartida + " - " +
-                localDaPartida + " | " +
-                time1.getNome() + " " + golsTime1 +
-                " x " + golsTime2 + " " +
+        String placar = (status == StatusPartida.CONCLUIDA)
+                ? golsTime1 + "x" + golsTime2 : "x";
+        return "Rodada " + rodada + " | " + dataRodada + "|" +
+                local + " | " +
+                time1.getNome() + " " + placar + " " +
                 time2.getNome() +
                 " (" + status + ")";
     }
