@@ -2,20 +2,13 @@ package model;
 
 public enum Resultado {
 
-    VITORIA(3),  // Vitória vale 3 pontos
-    EMPATE(1),   // Empate vale 1 ponto
-    DERROTA(0);  // Derrota vale 0 pontos
+    VITORIA(3),  // (Valor associado) = Pontos por Vítoria
+    EMPATE(1),   // (Valor associado) = Pontos por Empate
+    DERROTA(0);  // (Valor associado) = Pontos por Derrota
 
-    private int pontuacao;
-    // Guarda quantos pontos aquele resultado vale
+    private final int pontosAssociados;  // Guarda quantos pontos um resultado qualquer vale
 
-    private Resultado(int pontuacao) {
-        // Construtor do enum
-        this.pontuacao = pontuacao;
-    }
+    Resultado( int pontosAssociados ) { this.pontosAssociados = pontosAssociados; }
 
-    public int getPontuacao() {
-        // Retorna a pontuação associada ao resultado
-        return pontuacao;
-    }
+    public int getPontosAssociados() { return this.pontosAssociados; }   // Retorna a pontuação associada ao resultado
 }

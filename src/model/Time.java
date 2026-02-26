@@ -2,78 +2,77 @@ package model;
 
 public class Time {
 
-    private final String nome;       // Nome do time
-    private int pontos;        // Total de pontos na tabela
-    private int vitorias;      // Quantidade de vitórias
-    private int empates;       // Quantidade de empates
-    private int derrotas;      // Quantidade de derrotas
-    private int golsPro;       // Gols marcados
-    private int golsContra;    // Gols sofridos
-    private final Local estadio;     // Estádio próprio do time
+    // Atributos do Time
+    private final String nomeTime;       // Nome do time
+    private final Local localTime;       // "Casa" do próprio do time
 
-    public Time(String nome, Local estadio) {
-        // Construtor do time
-        this.nome = nome;
-        this.estadio = estadio;
-        this.pontos = 0;  // Começa com zero pontos
+    // Estatísticas do time:
+    private int total_pontos;
+    private int qnt_vitorias;
+    private int qnt_empates;
+    private int qnt_derrotas;
+    private int qnt_golsPro;
+    private int qnt_golsContra;
+
+    public Time( String nome, Local localTime ) {
+        this.nomeTime = nome;
+        this.localTime = localTime;
+        this.total_pontos = 0;
     }
 
-    public void registrarPartida(int golsFeitos, int golsSofridos) {
-        // Metodo chamado quando o time termina uma partida
-        golsPro += golsFeitos;       // Soma gols marcados
-        golsContra += golsSofridos;  // Soma gols sofridos
+    public void registrarPartida( int golsFeitos, int golsSofridos ) { // Metodo chamado quando o time termina uma partida
+        this.qnt_golsPro += golsFeitos;       // Soma gols marcados
+        this.qnt_golsContra += golsSofridos;  // Soma gols sofridos
 
-        if (golsFeitos > golsSofridos) {
-            // Se fez mais gols → vitória
-            vitorias++;
-            pontos += 3;
+        if (golsFeitos > golsSofridos) {              // Se fez mais gols → vitória
+            this.qnt_vitorias++;
+            this.total_pontos += Resultado.VITORIA.getPontosAssociados();
         }
-        else if (golsFeitos == golsSofridos) {
-            // Se fez igual número de gols → empate
-            empates++;
-            pontos += 1;
+        else if (golsFeitos == golsSofridos) {        // Se fez igual número de gols → empate
+            this.qnt_empates++;
+            this.total_pontos += Resultado.EMPATE.getPontosAssociados();
         }
-        else {
-            // Se fez menos gols → derrota
-            derrotas++;
+        else {                                        // Se fez menos gols → derrota
+            this.qnt_derrotas++;
+            this.total_pontos += Resultado.DERROTA.getPontosAssociados();
         }
     }
 
-    public int getSaldoDeGols() {
-        // Retorna saldo de gols (critério de desempate)
-        return golsPro - golsContra;
+    public int getTotal_pontos() {
+        return this.total_pontos;
     }
 
-    public int getPontos() {
-        return pontos;
+    public int getQnt_vitorias() {
+        return this.qnt_vitorias;
     }
 
-    public int getVitorias() {
-        return vitorias;
+    public int getQnt_empates() { return this.qnt_empates; }
+
+    public int getQnt_derrotas() { return this.qnt_derrotas; }
+
+    public int getQnt_golsPro() {
+        return this.qnt_golsPro;
     }
 
-    public int getGolsPro() {
-        return golsPro;
+    public int getQnt_golsContra() {
+        return this.qnt_golsContra;
     }
 
-    public int getGolsContra() {
-        return golsContra;
+    public String getNomeTime() {
+        return this.nomeTime;
     }
 
-    public String getNome() {
-        return nome;
+    public Local getLocalTime() {
+        return this.localTime;
     }
 
-    public Local getEstadio() {
-        return estadio;
-    }
+    public int getSaldoDeGols() { return this.qnt_golsPro - this.qnt_golsContra; } // Retorna saldo de gols (critério de desempate)
 
     @Override
-    public String toString() {
-        // Define como o time aparece na tabela
-        return nome +
-                " | Pontos: " + pontos +
-                " | Vitórias: " + vitorias +
+    public String toString() { // Define o padrão da exibição dos times na tabela
+        return this.nomeTime +
+                " | Pontos: " + this.total_pontos +
+                " | Vitórias: " + this.qnt_vitorias +
                 " | Saldo: " + getSaldoDeGols();
     }
 }

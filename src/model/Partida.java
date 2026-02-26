@@ -8,111 +8,103 @@ import java.time.LocalDate;
 
 public class Partida {
 
-    private final Time time1;              // Mandante
-    private final Time time2;              // Visitante
-    private final int rodada;
-    private final Local local;
-    private final LocalDate dataRodada;
-    private int golsTime1;
-    private int golsTime2;
+    // Atributos da partida
     private StatusPartida status;
-    private boolean foiParaPenaltis;
-    private int golsPenaltisTime1;
-    private int golsPenaltisTime2;
+    private final int rodadaAtual;
+    private final Local local;
+    private final LocalDate dataDaRodada;
 
-    public Partida(Time time1, Time time2, int rodada, LocalDate dataRodada) {
-        this.time1 = time1;
-        this.time2 = time2;
-        this.rodada = rodada;
-        this.dataRodada = dataRodada;
-        this.local = time1.getEstadio(); // O estádio será o do mandante
+    private final Time timeMandante;
+    private int golsTimeMandante;
+
+    private final Time timeVisitante;
+    private int golsTimeVisitante;
+
+    private boolean foiParaPenaltis;
+    private int golsPenaltisTimeMandante;
+    private int golsPenaltisTimeVisitante;
+
+    public Partida( Time time1, Time time2, int rodada, LocalDate dataDaRodada ) {
+        this.timeMandante = time1;
+        this.timeVisitante = time2;
+        this.rodadaAtual = rodada;
+        this.dataDaRodada = dataDaRodada;
+        this.local = time1.getLocalTime(); // O estádio será o do mandante
         this.status = StatusPartida.AGENDADA;
     }
 
+    public void encerrarPartida( int gols1, int gols2 ) {
 
-    public void encerrarPartida(int gols1, int gols2) {
-        if (status == StatusPartida.CONCLUIDA) {
-            throw new  PartidaJaEncerradaException("Partida ja encerrada!! ");
+        if ( this.status == StatusPartida.CONCLUIDA ) { throw new  PartidaJaEncerradaException("Partida ja encerrada!! "); }
+
+        if ( gols1 < 0 || gols2 < 0 ) {
+            System.out.println("Quantidade inválida de gols fornecida. (Por favor, coloque valores corretos)");
+            return;
         }
 
-        this.golsTime1 = gols1;
-        this.golsTime2 = gols2;
+        this.golsTimeMandante = gols1;
+        this.golsTimeVisitante = gols2;
 
-        time1.registrarPartida(gols1, gols2);
-        time2.registrarPartida(gols2, gols1);
+        this.timeMandante.registrarPartida(gols1, gols2);
+        this.timeVisitante.registrarPartida(gols2, gols1);
 
-        if (golsTime1 != golsTime2) {
-            this.status = StatusPartida.CONCLUIDA; // tem vencedor, encerra
-        } else {
-            this.status = StatusPartida.EM_ANDAMENTO; // empate, aguarda pênaltis
-        }
+        if ( this.golsTimeMandante != this.golsTimeVisitante ) { this.status = StatusPartida.CONCLUIDA; }    // tem vencedor, encerra a partida
+        else { this.status = StatusPartida.EM_ANDAMENTO; }                                                   // empate, aguarda a decisão por pênaltis
     }
 
-    public void encerrarPenaltis(int gols1,int gols2) throws PenaltisEmpatadadosException {
-        if (status != StatusPartida.EM_ANDAMENTO){
-            throw new CampeonatoRuntimeException("Partida finalizada sem penaltis.");
-        }
-        if (golsTime1 != golsTime2){
-            throw new CampeonatoRuntimeException("Partida não necessita de penaltis");
-        }
-        if(golsPenaltisTime1 == golsPenaltisTime2){
-            throw new PenaltisEmpatadadosException("Penaltis empatados, continue a cobrança");
-        }
-        this.golsPenaltisTime1 = gols1;
-        this.golsPenaltisTime2 = gols2;
+    public void encerrarPenaltis( int gols1, int gols2 ) throws PenaltisEmpatadadosException {
 
-        foiParaPenaltis = true;
+        if ( this.status != StatusPartida.EM_ANDAMENTO ) { throw new CampeonatoRuntimeException("Partida finalizada sem penaltis."); }
+
+        if ( this.golsTimeMandante != this.golsTimeVisitante ) { throw new CampeonatoRuntimeException("Partida não necessita de penaltis"); }
+
+        if( this.golsPenaltisTimeMandante == this.golsPenaltisTimeVisitante ) { throw new PenaltisEmpatadadosException("Penaltis empatados, continue a cobrança"); }
+
+        this.golsPenaltisTimeMandante = gols1;
+        this.golsPenaltisTimeVisitante = gols2;
+
+        this.foiParaPenaltis = true;
         this.status = StatusPartida.CONCLUIDA;
     }
-    public Time getVencedor(){
-        if (status != StatusPartida.CONCLUIDA){
-            throw new PartidaJaEncerradaException("Partida ainda não foi encerrada.");
+
+    public Time getVencedor() {
+        if ( this.status != StatusPartida.CONCLUIDA ) { throw new PartidaJaEncerradaException("Partida ainda não foi encerrada."); }
+
+        if ( this.foiParaPenaltis ) {
+            if ( this.golsPenaltisTimeMandante > this.golsPenaltisTimeVisitante ) { return this.timeMandante; }
+            else { return this.timeVisitante; }
         }
-        if (foiParaPenaltis){
-            if (golsPenaltisTime1>golsPenaltisTime2){
-                return time1;
-            }else {
-                return time2;
-            }
-        }else {
-            if (golsTime1 > golsTime2) {
-                return time1;
-            } else {
-                return time2;
-            }
+        else {
+            if ( this.golsTimeMandante > this.golsTimeVisitante ) { return this.timeMandante; }
+            else { return this.timeVisitante; }
         }
     }
 
-    public StatusPartida getStatus() {
-        return status;
-    }
+    public StatusPartida getStatus() { return this.status; }
 
-    public Time getTime1() {
-        return time1;
-    }
+    public Time getTimeMandante() { return this.timeMandante; }
 
-    public Time getTime2() {
-        return time2;
-    }
+    public Time getTimeVisitante() { return this.timeVisitante; }
 
-    public int getRodada(){return rodada;}
+    public int getRodadaAtual(){ return this.rodadaAtual; }
 
-    public Local getLocal() {return local;}
+    public Local getLocal() { return this.local; }
 
-    public LocalDate getDataRodada() {return dataRodada;}
+    public LocalDate getDataRodada() { return this.dataDaRodada; }
 
-    public int getGolsTime1() {return golsTime1;}
+    public int getGolsTimeMandante() { return this.golsTimeMandante; }
 
-    public int getGolsTime2() {return golsTime2;}
+    public int getGolsTimeVisitante() { return this.golsTimeVisitante; }
 
     @Override
     public String toString() {
-        String placar = (status == StatusPartida.CONCLUIDA)
-                ? golsTime1 + "x" + golsTime2 : "x";
-        return "Rodada " + rodada + " | " + dataRodada + "|" +
-                local + " | " +
-                time1.getNome() + " " + placar + " " +
-                time2.getNome() +
-                " (" + status + ")";
+        String placar = ( this.status == StatusPartida.CONCLUIDA )
+                ? this.golsTimeMandante + "x" + this.golsTimeVisitante : "x";
+
+        return "Rodada " + this.rodadaAtual + " | " + this.dataDaRodada + "|" +
+                this.local + " | " +
+                this.timeMandante.getNomeTime() + " " + placar + " " +
+                this.timeVisitante.getNomeTime() +
+                " (" + this.status + ")";
     }
 }
