@@ -1,10 +1,11 @@
 package model;
 
+import exception.CampeonatoRuntimeException;
 import exception.TimesInsuficientesException;
 
 import java.time.LocalDate;
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 public class CampeonatoMataMata extends Campeonato {
     public CampeonatoMataMata(String nome, int diasDeDescanso, LocalDate dataDeInicio) {
@@ -25,6 +26,30 @@ public class CampeonatoMataMata extends Campeonato {
             Time timeB = lista.get(i*2 + 1);
             Partida partida = new Partida(timeA,timeB,1, dataRodada);
             confrontos.add(partida);
+        }
+    }
+    public void avancarFase(int rodadaAtual){
+        List<Partida> faseSeparada = confrontos.stream().filter(p -> p.getRodada() == rodadaAtual).toList();
+
+        for (Partida p : faseSeparada) {
+            if (p.getStatus() != StatusPartida.CONCLUIDA){
+                throw new CampeonatoRuntimeException("Partida não foi concluida");
+            }
+        }
+
+        List<Time> vencedores = faseSeparada.stream()
+                .map(Partida::getVencedor)  // cada Partida vira um Time
+                .toList();
+        if(vencedores.size() == 1){
+            return;
+        }
+        LocalDate proximaData = dataDeInicio.plusDays((long) rodadaAtual * diasDeDescanso);
+        int proximaRodada = rodadaAtual + 1;
+
+        for (int i = 0; i < vencedores.size() / 2; i++) {
+            Time timeA = vencedores.get(i * 2);
+            Time timeB = vencedores.get(i * 2 + 1);
+            confrontos.add(new Partida(timeA, timeB, proximaRodada, proximaData));
         }
     }
 }
