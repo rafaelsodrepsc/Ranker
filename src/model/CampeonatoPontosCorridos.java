@@ -27,7 +27,7 @@ public class CampeonatoPontosCorridos extends Campeonato {
                 Time timeA = listaIda.get(j);
                 Time timeB = listaIda.get(listaIda.size()- 1 - j);
 
-                Partida partida = new Partida(timeA,timeB,i ,dataRodada);
+                Partida partida = new Partida(timeA,timeB,i ,dataRodada,timeA.getLocalTime());
                 this.confrontos.add(partida);
             }
             Time ultimo = listaIda.removeLast();
@@ -41,7 +41,7 @@ public class CampeonatoPontosCorridos extends Campeonato {
                 Time timeA = listaVolta.get(j);
                 Time timeB = listaVolta.get(listaVolta.size() - 1 - j);
 
-                Partida partida = new Partida(timeB,timeA, numRodadas + i, dataRodada);
+                Partida partida = new Partida(timeB,timeA, numRodadas + i, dataRodada, timeB.getLocalTime());
                 this.confrontos.add(partida);
             }
             Time ultimo = listaVolta.removeLast();

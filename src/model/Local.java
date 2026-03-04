@@ -24,5 +24,5 @@ public class Local {
     }
 
     @Override
-    public String toString() { return this.nome + " | Horário de funcionamento: " + this.abertura + " às " + this.fechamento; } // Define como o objeto será exibido ao ser impresso
+    public String toString() { return this.nome + " | " + this.abertura; } // Define como o objeto será exibido ao ser impresso
 }

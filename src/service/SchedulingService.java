@@ -39,7 +39,6 @@ public class SchedulingService {
                         agendada = true;
                         break;
                     }
-
                 }
                 if(!agendada){
                     data = data.plusDays(1);

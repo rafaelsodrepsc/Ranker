@@ -25,12 +25,13 @@ public class Partida {
     private int golsPenaltisTimeMandante;
     private int golsPenaltisTimeVisitante;
 
-    public Partida( Time time1, Time time2, int rodada, LocalDate dataDaRodada ) {
+    public Partida( Time time1, Time time2, int rodada, LocalDate dataDaRodada, Local local) {
         this.timeMandante = time1;
         this.timeVisitante = time2;
         this.rodadaAtual = rodada;
         this.dataDaRodada = dataDaRodada;
         this.status = StatusPartida.AGENDADA;
+        this.local = (local != null) ? local : time1.getLocalTime();
     }
 
     public void encerrarPartida( int gols1, int gols2 ) {
@@ -48,8 +49,7 @@ public class Partida {
         this.timeMandante.registrarPartida(gols1, gols2);
         this.timeVisitante.registrarPartida(gols2, gols1);
 
-        if ( this.golsTimeMandante != this.golsTimeVisitante ) { this.status = StatusPartida.CONCLUIDA; }    // tem vencedor, encerra a partida
-        else { this.status = StatusPartida.EM_ANDAMENTO; }                                                   // empate, aguarda a decisão por pênaltis
+        this.status = StatusPartida.CONCLUIDA;                                                   // empate, aguarda a decisão por pênaltis
     }
 
     public void encerrarPenaltis( int gols1, int gols2 ) throws PenaltisEmpatadadosException {

@@ -31,7 +31,7 @@ public class CampeonatoMataMata extends Campeonato {
         for ( int i = 0; i < lista.size()/2; i++ ) {
             Time timeA = lista.get(i*2);
             Time timeB = lista.get(i*2 + 1);
-            Partida partida = new Partida(timeA,timeB,1, dataRodada);
+            Partida partida = new Partida(timeA,timeB,1, dataRodada,timeA.getLocalTime());
             this.confrontos.add(partida);
         }
     }
@@ -55,7 +55,7 @@ public class CampeonatoMataMata extends Campeonato {
         for ( int i = 0; i < vencedores.size() / 2; i++ ) {
             Time timeA = vencedores.get(i * 2);
             Time timeB = vencedores.get(i * 2 + 1);
-            this.confrontos.add(new Partida(timeA, timeB, proximaRodada, proximaData));
+            this.confrontos.add(new Partida(timeA, timeB, proximaRodada, proximaData,timeA.getLocalTime()));
         }
     }
 }
