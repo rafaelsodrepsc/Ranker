@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CampeonatoMataMata extends Campeonato {
+    private LocalDate dataLimite;
+
     public CampeonatoMataMata( String nome, int diasDeDescanso, LocalDate dataDeInicio ) {
         super(nome, diasDeDescanso, dataDeInicio);
     }

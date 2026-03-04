@@ -5,15 +5,16 @@ import exception.PartidaJaEncerradaException;
 import exception.PenaltisEmpatadadosException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Partida {
 
     // Atributos da partida
     private StatusPartida status;
     private final int rodadaAtual;
-    private final Local local;
     private final LocalDate dataDaRodada;
-
+    private LocalTime horario;
+    private Local local;
     private final Time timeMandante;
     private int golsTimeMandante;
 
@@ -29,7 +30,6 @@ public class Partida {
         this.timeVisitante = time2;
         this.rodadaAtual = rodada;
         this.dataDaRodada = dataDaRodada;
-        this.local = time1.getLocalTime(); // O estádio será o do mandante
         this.status = StatusPartida.AGENDADA;
     }
 
@@ -80,6 +80,14 @@ public class Partida {
         }
     }
 
+    public LocalTime getHorario() {
+        return this.horario;
+    }
+
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
+    }
+
     public StatusPartida getStatus() { return this.status; }
 
     public Time getTimeMandante() { return this.timeMandante; }
@@ -89,6 +97,10 @@ public class Partida {
     public int getRodadaAtual(){ return this.rodadaAtual; }
 
     public Local getLocal() { return this.local; }
+
+    public void setLocal(Local local) {
+        this.local = local;
+    }
 
     public LocalDate getDataRodada() { return this.dataDaRodada; }
 
@@ -101,10 +113,10 @@ public class Partida {
         String placar = ( this.status == StatusPartida.CONCLUIDA )
                 ? this.golsTimeMandante + "x" + this.golsTimeVisitante : "x";
 
-        return "Rodada " + this.rodadaAtual + " | " + this.dataDaRodada + "|" +
-                this.local + " | " +
-                this.timeMandante.getNomeTime() + " " + placar + " " +
-                this.timeVisitante.getNomeTime() +
-                " (" + this.status + ")";
+        String hora = (horario != null) ? " | " + horario : "";
+
+        return "Rodada " + rodadaAtual + " | " + dataDaRodada + hora + " | " + local + " | " +
+                timeMandante.getNomeTime() + " " + placar + " " + timeVisitante.getNomeTime() +
+                " (" + status + ")";
     }
 }
