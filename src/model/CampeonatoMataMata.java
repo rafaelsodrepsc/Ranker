@@ -14,6 +14,10 @@ public class CampeonatoMataMata extends Campeonato {
         super(nome, diasDeDescanso, dataDeInicio);
     }
 
+    public LocalDate getDataLimite() {
+        return dataLimite;
+    }
+
     @Override
     public void gerarConfrontos() throws TimesInsuficientesException {
 
