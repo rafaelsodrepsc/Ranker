@@ -14,14 +14,6 @@ import java.util.Scanner;
 public class Menu {
     private Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        try {
-            new Menu().iniciar();
-        } catch (TimesInsuficientesException e) {
-            System.err.println("Erro fatal: " + e.getMessage());
-        }
-    }
-
     public void iniciar() throws TimesInsuficientesException {
         while (true) {
             System.out.println("\n+++++ Ranker - Sistema de campeonatos +++++");
