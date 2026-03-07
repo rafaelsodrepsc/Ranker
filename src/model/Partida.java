@@ -54,17 +54,17 @@ public class Partida {
 
     public void encerrarPenaltis( int gols1, int gols2 ) throws PenaltisEmpatadadosException {
 
-        if ( this.status != StatusPartida.EM_ANDAMENTO ) { throw new CampeonatoRuntimeException("Partida finalizada sem penaltis."); }
+        if ( this.status != StatusPartida.CONCLUIDA ) { throw new CampeonatoRuntimeException("Partida ainda não finalizada."); }
 
         if ( this.golsTimeMandante != this.golsTimeVisitante ) { throw new CampeonatoRuntimeException("Partida não necessita de penaltis"); }
 
-        if( this.golsPenaltisTimeMandante == this.golsPenaltisTimeVisitante ) { throw new PenaltisEmpatadadosException("Penaltis empatados, continue a cobrança"); }
 
         this.golsPenaltisTimeMandante = gols1;
         this.golsPenaltisTimeVisitante = gols2;
 
+        if( this.golsPenaltisTimeMandante == this.golsPenaltisTimeVisitante ) { throw new PenaltisEmpatadadosException("Penaltis empatados, continue a cobrança"); }
+
         this.foiParaPenaltis = true;
-        this.status = StatusPartida.CONCLUIDA;
     }
 
     public Time getVencedor() {

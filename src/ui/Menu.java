@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Menu {
-    // Atributos agora fora do main
     private Scanner scanner = new Scanner(System.in);
     private Campeonato campeonatoAtivo = null;
 
