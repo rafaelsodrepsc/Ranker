@@ -110,12 +110,21 @@ public class Partida {
 
     @Override
     public String toString() {
-        String placar = ( this.status == StatusPartida.CONCLUIDA )
-                ? this.golsTimeMandante + "x" + this.golsTimeVisitante : "x";
+        String placar;
+
+        if (status == StatusPartida.CONCLUIDA) {
+            if (foiParaPenaltis) {
+                placar = golsTimeMandante + " (" + golsPenaltisTimeMandante + ") x (" + golsPenaltisTimeVisitante + ") " + golsTimeVisitante;
+            } else {
+                placar = golsTimeMandante + "x" + golsTimeVisitante;
+            }
+        } else {
+            placar = "x";
+        }
 
         String hora = (horario != null) ? " | " + horario : "";
 
-        return "Rodada " + rodadaAtual + " | " + dataDaRodada + hora + " | " + local + " | " +
+        return "Rodada " + rodadaAtual + " | " + dataDaRodada + hora + " | " + local.getNome() + " | " +
                 timeMandante.getNomeTime() + " " + placar + " " + timeVisitante.getNomeTime() +
                 " (" + status + ")";
     }

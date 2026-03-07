@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 public class CampeonatoMataMata extends Campeonato {
     private LocalDate dataLimite;
 
-    public CampeonatoMataMata( String nome, int diasDeDescanso, LocalDate dataDeInicio ) {
+    public CampeonatoMataMata( String nome, int diasDeDescanso, LocalDate dataDeInicio, LocalDate dataLimite) {
         super(nome, diasDeDescanso, dataDeInicio);
+        this.dataLimite = dataLimite;
     }
 
     public LocalDate getDataLimite() {
@@ -36,7 +37,7 @@ public class CampeonatoMataMata extends Campeonato {
         }
     }
 
-    public void avancarFase(int rodadaDaVez){
+    public boolean avancarFase(int rodadaDaVez){
         List<Partida> faseSeparada = this.confrontos.stream().filter(p -> p.getRodadaAtual() == rodadaDaVez).toList();
 
         for ( Partida p : faseSeparada ) {
@@ -47,15 +48,19 @@ public class CampeonatoMataMata extends Campeonato {
                 .map(Partida::getVencedor)  // cada Partida vira um Time
                 .toList();
 
-        if( vencedores.size() == 1 ){ return; }
-
+        if( vencedores.size() == 1 ){
+            System.out.println("Campeão: " + vencedores.get(0).getNomeTime());
+            return true;
+        }
         LocalDate proximaData = this.dataDeInicio.plusDays((long) rodadaDaVez * this.diasDeDescanso);
         int proximaRodada = rodadaDaVez + 1;
 
         for ( int i = 0; i < vencedores.size() / 2; i++ ) {
             Time timeA = vencedores.get(i * 2);
             Time timeB = vencedores.get(i * 2 + 1);
-            this.confrontos.add(new Partida(timeA, timeB, proximaRodada, proximaData,timeA.getLocalTime()));
+            this.confrontos.add(new Partida(timeA, timeB, proximaRodada, proximaData, timeA.getLocalTime()));
         }
+        return false;
     }
+
 }
