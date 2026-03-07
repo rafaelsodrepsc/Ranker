@@ -58,6 +58,8 @@ public class Menu {
         scanner.nextLine();
         System.out.print("Data de inicio (AAAA-MM-DD): ");
         LocalDate dataI = LocalDate.parse(scanner.nextLine());
+        System.out.print("Data de fim (AAAA-MM-DD): ");
+        LocalDate dataF = LocalDate.parse(scanner.nextLine());
 
         CampeonatoPontosCorridos campeonato = new CampeonatoPontosCorridos(nome, diasDescanso, dataI);
 
