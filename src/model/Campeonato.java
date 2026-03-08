@@ -4,7 +4,7 @@ import exception.TimeJaCadastradoException;
 import exception.TimesInsuficientesException;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.List;              // Importa a interface List
 import java.util.ArrayList;         // Importa a implementação ArrayList
 
@@ -12,9 +12,9 @@ public abstract class Campeonato {  // Classe abstrata (não pode ser instanciad
 
     // Atributos do Campeonato
     protected String nome;
-    protected List<Partida> confrontos = new ArrayList<>();
-    protected List<Local> locais = new ArrayList<>();
-    protected List<Time> times = new ArrayList<>();
+    protected List<Partida> confrontos;
+    protected List<Local> locais;
+    protected List<Time> times;
     protected LocalDate dataDeInicio;
     protected int diasDeDescanso;
 
@@ -22,6 +22,9 @@ public abstract class Campeonato {  // Classe abstrata (não pode ser instanciad
         this.nome = nome;
         this.diasDeDescanso = diasDeDescanso;
         this.dataDeInicio = dataDeInicio;
+        this.times = new ArrayList<>();
+        this.confrontos = new ArrayList<>();
+        this.locais = new ArrayList<>();
     }
 
     public void adicionarTime( Time time ) {
@@ -45,6 +48,8 @@ public abstract class Campeonato {  // Classe abstrata (não pode ser instanciad
     public List<Time> getTimes() { return this.times; }
 
     public List<Partida> getConfrontos() { return this.confrontos; }
+
+    public abstract void exibirTabela();
 
     public abstract void gerarConfrontos() throws TimesInsuficientesException;
 }

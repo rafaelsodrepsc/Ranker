@@ -49,7 +49,7 @@ public class Partida {
         this.timeMandante.registrarPartida(gols1, gols2);
         this.timeVisitante.registrarPartida(gols2, gols1);
 
-        this.status = StatusPartida.CONCLUIDA;                                                   // empate, aguarda a decisão por pênaltis
+        this.status = StatusPartida.CONCLUIDA;
     }
 
     public void encerrarPenaltis( int gols1, int gols2 ) throws PenaltisEmpatadadosException {
@@ -107,6 +107,15 @@ public class Partida {
     public int getGolsTimeMandante() { return this.golsTimeMandante; }
 
     public int getGolsTimeVisitante() { return this.golsTimeVisitante; }
+
+    public int ResultadoMandante() {
+        if (this.golsTimeMandante > this.golsTimeVisitante) {
+            return 1;
+        } else if (this.golsTimeVisitante > this.golsTimeMandante) {
+            return -1;
+        }
+        return 0;
+    }
 
     @Override
     public String toString() {

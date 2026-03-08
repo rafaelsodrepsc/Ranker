@@ -87,6 +87,9 @@ public class Menu {
                 case 5:
                     simularCampeonato(campeonato);
                     break;
+                case 6:
+                    campeonato.exibirTabela();
+                    break;
                 case 0:
                     return;
                 default:
@@ -270,6 +273,7 @@ public class Menu {
         System.out.println("3. Gerar Confrontos");
         System.out.println("4. Mostrar Confrontos");
         System.out.println("5. Simular campeonato inteiro");
+        System.out.println("6. Exibir Tabela Geral");
         System.out.println("0. Voltar");
     }
     private void menuMataMata() {
