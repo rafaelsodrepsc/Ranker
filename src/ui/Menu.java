@@ -5,9 +5,12 @@ import exception.PenaltisEmpatadadosException;
 import exception.TimesInsuficientesException;
 import model.*;
 import service.SchedulingService;
+import service.RelatorioService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,9 +24,7 @@ public class Menu {
             System.out.println("2. Mata-Mata");
             System.out.println("0. Sair");
 
-            System.out.print("Digite uma opção: ");
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
+            int escolha = lerInteiro("Digite uma opção: ");
 
             switch (escolha) {
                 case 1:
@@ -45,21 +46,17 @@ public class Menu {
         System.out.println("\n===== Informações iniciais ======");
         System.out.print("Digite o nome do seu Campeonato: ");
         String nome = scanner.nextLine();
-        System.out.print("Dias de descanso: ");
-        int diasDescanso = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Data de inicio (AAAA-MM-DD): ");
-        LocalDate dataI = LocalDate.parse(scanner.nextLine());
-        System.out.print("Data de fim (AAAA-MM-DD): ");
-        LocalDate dataF = LocalDate.parse(scanner.nextLine());
+        int diasDescanso = lerInteiro("Dias de descanso: ");
+
+        LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
+
+        LocalDate dataF = lerData("Data de fim (AAAA-MM-DD): ");
 
         CampeonatoPontosCorridos campeonato = new CampeonatoPontosCorridos(nome, diasDescanso, dataI);
 
         while (true) {
             menuPontosCorridos();
-            System.out.print("Digite uma opção: ");
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
+            int escolha = lerInteiro("Digite uma opção: ");
 
             switch (escolha) {
                 case 1:
@@ -88,7 +85,7 @@ public class Menu {
                     simularCampeonato(campeonato);
                     break;
                 case 6:
-                    campeonato.exibirTabela();
+                    RelatorioService.exibirTabela(campeonato);
                     break;
                 case 0:
                     return;
@@ -98,26 +95,22 @@ public class Menu {
         }
     }
 
-    protected void loopMataMata() throws TimesInsuficientesException {
+    protected void loopMataMata(){
         System.out.println("\n===== Informações iniciais ======");
         System.out.print("Digite o nome do seu Campeonato: ");
         String nome = scanner.nextLine();
-        System.out.print("Dias de descanso: ");
-        int diasDescanso = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Data de inicio (AAAA-MM-DD): ");
-        LocalDate dataI = LocalDate.parse(scanner.nextLine());
-        System.out.print("Data de fim (AAAA-MM-DD): ");
-        LocalDate dataF = LocalDate.parse(scanner.nextLine());
+        int diasDescanso = lerInteiro("Dias de descanso: ");
+
+        LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
+
+        LocalDate dataF = lerData("Data de fim (AAAA-MM-DD): ");
 
         CampeonatoMataMata campeonato = new CampeonatoMataMata(nome, diasDescanso, dataI,dataF);
         int faseAtual = 1;
 
         while (true) {
             menuMataMata();
-            System.out.print("Digite uma opção: ");
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
+            int escolha = lerInteiro("Digite uma opção: ");
 
             switch (escolha) {
                 case 1:
@@ -149,13 +142,17 @@ public class Menu {
                     }
                     break;
                 case 6:
-                    simularFase(campeonato,faseAtual);
+                    simularFase(campeonato, faseAtual);
                     boolean encerrado = campeonato.avancarFase(faseAtual);
                     faseAtual++;
                     if (encerrado){
                         return;
-                    }else{
-                        new SchedulingService().agendarPartidas(campeonato);
+                    } else {
+                        try {
+                            new SchedulingService().agendarPartidas(campeonato);
+                        } catch (TimesInsuficientesException | CampeonatoRuntimeException e) {
+                            System.out.println("Erro no agendamento: " + e.getMessage());
+                        }
                     }
                     break;
                 case 0:
@@ -172,10 +169,9 @@ public class Menu {
         String nomeTime = scanner.nextLine();
         System.out.print("Nome do Local: ");
         String localTime = scanner.nextLine();
-        System.out.print("Horário Abertura (HH:MM): ");
-        LocalTime horarioA = LocalTime.parse(scanner.nextLine());
-        System.out.print("Horário Fechamento (HH:MM): ");
-        LocalTime horarioF = LocalTime.parse(scanner.nextLine());
+
+        LocalTime horarioA = lerHorario("Horário Abertura (HH:MM): ");
+        LocalTime horarioF = lerHorario("Horário Fechamento (HH:MM): ");
 
         cp.adicionarTime(new Time(nomeTime, new Local(localTime, horarioA, horarioF)));
     }
@@ -188,10 +184,9 @@ public class Menu {
     private void cadastrarLocalMM(CampeonatoMataMata cp){
         System.out.print("Nome do Local: ");
         String localNome = scanner.nextLine();
-        System.out.print("Horário Abertura (HH:MM): ");
-        LocalTime horarioA = LocalTime.parse(scanner.nextLine());
-        System.out.print("Horário Fechamento (HH:MM): ");
-        LocalTime horarioF = LocalTime.parse(scanner.nextLine());
+
+        LocalTime horarioA = lerHorario("Horário Abertura (HH:MM): ");
+        LocalTime horarioF = lerHorario("Horário Fechamento (HH:MM): ");
 
         cp.adicionarLocal(new Local(localNome,horarioA,horarioF));
     }
@@ -285,5 +280,40 @@ public class Menu {
         System.out.println("5. Mostrar Confrontos");
         System.out.println("6. Simular Fase Atual");
         System.out.println("0. Voltar");
+    }
+    private int lerInteiro(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            try {
+                int valor = scanner.nextInt();
+                scanner.nextLine();
+                return valor;
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+                System.out.println("Digite um número válido!");
+            }
+        }
+    }
+
+    private LocalDate lerData(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            try {
+                return LocalDate.parse(scanner.nextLine());
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato inválido! Use AAAA-MM-DD");
+            }
+        }
+    }
+
+    private LocalTime lerHorario(String mensagem) {
+        while (true) {
+            System.out.print(mensagem);
+            try {
+                return LocalTime.parse(scanner.nextLine());
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato inválido! Use HH:MM");
+            }
+        }
     }
 }

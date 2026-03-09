@@ -49,7 +49,5 @@ public abstract class Campeonato {  // Classe abstrata (não pode ser instanciad
 
     public List<Partida> getConfrontos() { return this.confrontos; }
 
-    public abstract void exibirTabela();
-
     public abstract void gerarConfrontos() throws TimesInsuficientesException;
 }
