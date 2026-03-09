@@ -63,21 +63,5 @@ public class CampeonatoPontosCorridos extends Campeonato {
             listaVolta.add(1, ultimo);
         }
     }
-
-    /* ---------------------------------------------------------
-    /*        METODO QUE DEFINE O CAMPEÃO DA LIGA
-    // ---------------------------------------------------------
-       Ordena os times de acordo com os critérios:
-       1º Pontos
-       2º Vitórias
-       3º Saldo de gols
-    */
-    public Time campeao() {
-
-        Tabela tabela = new Tabela(this.times); // Cria um objeto Tabela usando a lista atual de times
-        tabela.classificar();
-
-        return tabela.getClassificados(1).getFirst(); // Pega o primeiro colocado (posição 0)
-    }
 }
 
