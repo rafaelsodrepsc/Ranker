@@ -2,6 +2,7 @@ package service;
 
 import model.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -10,10 +11,11 @@ import java.util.stream.Collectors;
 
 public class RelatorioService {
 
-    public static String ultimasPartidas(Campeonato cp, Time t) {
+    public static String ultimasPartidas(Campeonato cp, Time t) { //código feito com auxílio de IA
         AtomicInteger index = new AtomicInteger(0);
 
-        List<String> resultados = cp.getConfrontos().stream()
+        List<Partida> confrontos = cp.getConfrontos().reversed();
+        List<String> resultados = confrontos.stream()
                 .filter(p -> p.getStatus() == StatusPartida.CONCLUIDA)
                 .filter(p -> p.getTimeMandante() == t || p.getTimeVisitante() == t)
                 .limit(5) // Pega apenas os 5 primeiros (mais recentes)
@@ -54,7 +56,7 @@ public class RelatorioService {
         return String.join(" ", resultados); // junta separando por espaço
     }
 
-    public static String centralizar(String texto, int largura) {
+    public static String centralizar(String texto, int largura) { //código feito com auxílio de IA
         if (texto.length() > largura) {
             texto = texto.substring(0, largura - 3) + "...";
         }
@@ -71,7 +73,7 @@ public class RelatorioService {
         return " ".repeat(antes) + texto + " ".repeat(depois);
     }
 
-    public static void exibirTabela(CampeonatoPontosCorridos cp) {
+    public static void exibirTabela(CampeonatoPontosCorridos cp) { //código feito com auxílio de IA
         List<Time> timesOrdenados = cp.getTimes().stream().sorted(Comparator.comparingInt(Time::getTotal_pontos) // Ordenar por ptn/vit/saldo de gols
                 .thenComparingInt(Time::getQnt_vitorias)
                 .thenComparingInt(Time::getQnt_golsPro)

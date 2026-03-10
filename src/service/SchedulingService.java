@@ -9,15 +9,12 @@ import model.Partida;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SchedulingService {
     public void agendarPartidas (CampeonatoMataMata campeonato) throws TimesInsuficientesException,CampeonatoRuntimeException{
 
-        Map<LocalDate, List<Local>> locaisOcupados = new HashMap<>();
+        Map<LocalDate, Set<Local>> locaisOcupados = new HashMap<>();
 
         for(Partida partida : campeonato.getConfrontos()){
             boolean agendada = false;
@@ -30,14 +27,14 @@ public class SchedulingService {
                 }
 
                 List<Local> locaisOrdenados = campeonato.getLocais().stream().sorted((a, b) -> {
-                    List<Local> ocupados = locaisOcupados.getOrDefault(dataAtual, new ArrayList<>());
+                    Set<Local> ocupados = locaisOcupados.getOrDefault(dataAtual, new HashSet<Local>());
                     long jogosA = ocupados.stream().filter(l -> l.equals(a)).count();
                     long jogosB = ocupados.stream().filter(l -> l.equals(b)).count();
                     return Long.compare(jogosA, jogosB);
                 }).toList();
 
                 for(Local local : locaisOrdenados){
-                    List<Local> ocupados = locaisOcupados.getOrDefault(data, new ArrayList<>());// Retorna uma lista vazia ao inves de Null
+                    Set<Local> ocupados = locaisOcupados.getOrDefault(data, new HashSet<Local>());// Retorna uma lista vazia ao inves de Null
 
                     long jogosAgendados = ocupados.stream()
                             .filter(l -> l.equals(local))
@@ -52,7 +49,7 @@ public class SchedulingService {
                         partida.setHorario(horario);
 
                         if (!locaisOcupados.containsKey(data)) {
-                            locaisOcupados.put(data, new ArrayList<>());
+                            locaisOcupados.put(data, new HashSet<Local>());
                         }
                         locaisOcupados.get(data).add(local);
                         agendada = true;
