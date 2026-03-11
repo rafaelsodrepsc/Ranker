@@ -49,7 +49,7 @@ public class CampeonatoMataMata extends Campeonato {
                 .toList();
 
         if( vencedores.size() == 1 ){
-            System.out.println("Campeão: " + vencedores.get(0).getNomeTime());
+            System.out.println("\nCampeão: " + vencedores.get(0).getNomeTime());
             return true;
         }
         LocalDate proximaData = this.dataDeInicio.plusDays((long) rodadaDaVez * this.diasDeDescanso);
