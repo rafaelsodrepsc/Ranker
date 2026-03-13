@@ -11,6 +11,8 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
         Scene scene = new Scene(loader.load());
+        stage.setWidth(1000);
+        stage.setHeight(700);
         stage.setTitle("Ranker - Sistema de Campeonatos");
         stage.setScene(scene);
         stage.show();
