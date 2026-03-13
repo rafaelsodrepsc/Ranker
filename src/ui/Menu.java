@@ -50,7 +50,19 @@ public class Menu {
 
         LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
 
-        LocalDate dataF = lerData("Data de fim (AAAA-MM-DD): ");
+        LocalDate dataF = lerDataFim("Data de fim (AAAA-MM-DD): ",dataI);
+
+        int numTimes = lerInteiro("Qual a quantidade de times desejados: ");
+
+        int timesEfetivos = (numTimes % 2 != 0) ? numTimes + 1 : numTimes; //Considera o numero impar com o time fantasma
+
+        int numRodadas = (timesEfetivos - 1) * 2;
+        int diasNecessarios = numRodadas * diasDescanso;
+
+        if (!validarPeriodo(dataI,dataF,diasNecessarios)){
+            System.out.println("Periodo de Tempo insuficiente");
+            return;
+        }
 
         CampeonatoPontosCorridos campeonato = new CampeonatoPontosCorridos(nome, diasDescanso, dataI);
 
@@ -103,7 +115,22 @@ public class Menu {
 
         LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
 
-        LocalDate dataF = lerData("Data de fim (AAAA-MM-DD): ");
+        LocalDate dataF = lerDataFim("Data de fim (AAAA-MM-DD): ",dataI);
+
+        int numTimes = lerInteiro("Qual a quantidade de times desejados: ");
+
+        if ((numTimes & (numTimes - 1)) != 0) {
+            System.out.println("Mata-Mata exige potência de 2! (2, 4, 8, 16...)");
+            return;
+        }
+
+        int numFases = (int) (Math.log(numTimes) / Math.log(2));
+        int diasNecessarios = numFases * diasDescanso;
+
+        if (!validarPeriodo(dataI,dataF,diasNecessarios)){
+            System.out.println("Periodo de tempo insuficiente");
+            return;
+        }
 
         CampeonatoMataMata campeonato = new CampeonatoMataMata(nome, diasDescanso, dataI,dataF);
         int faseAtual = 1;
@@ -299,7 +326,30 @@ public class Menu {
         while (true) {
             System.out.print(mensagem);
             try {
-                return LocalDate.parse(scanner.nextLine());
+                LocalDate data = LocalDate.parse(scanner.nextLine());
+                if (data.isBefore(LocalDate.now())){
+                    System.out.println("Data invalida, tente novamente.");
+                }else {
+                    return data;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato inválido! Use AAAA-MM-DD");
+            }
+        }
+    }
+
+    private LocalDate lerDataFim(String mensagem,LocalDate dataInicio){
+        while (true) {
+            System.out.print(mensagem);
+            try {
+                LocalDate data = LocalDate.parse(scanner.nextLine());
+                if (data.isBefore(LocalDate.now())) {
+                    System.out.println("Data inválida! Não pode ser no passado.");
+                } else if (data.isBefore(dataInicio)) {
+                    System.out.println("Data inválida! Não pode ser anterior à data de início.");
+                } else {
+                    return data;
+                }
             } catch (DateTimeParseException e) {
                 System.out.println("Formato inválido! Use AAAA-MM-DD");
             }
@@ -315,5 +365,8 @@ public class Menu {
                 System.out.println("Formato inválido! Use HH:MM");
             }
         }
+    }
+    private boolean validarPeriodo(LocalDate dataI, LocalDate dataF, int diasNecessarios) {
+        return !dataF.isBefore(dataI.plusDays(diasNecessarios));
     }
 }
