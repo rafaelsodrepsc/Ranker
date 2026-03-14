@@ -1,3 +1,4 @@
+import model.Cores;
 import ui.Menu;
 
 public class Main {
@@ -5,7 +6,7 @@ public class Main {
         try {
             new Menu().iniciar();
         } catch (Exception e) {
-            System.err.println("Erro fatal: " + e.getMessage());
+            System.err.println(Cores.VERMELHO + "[ErroFatal] " + Cores.RESET + e.getMessage());
         }
     }
 }

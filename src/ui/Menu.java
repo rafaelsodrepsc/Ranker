@@ -37,7 +37,8 @@ public class Menu {
                     System.out.println("Obrigado por utilizar nosso sistema!!");
                     return;
                 default:
-                    System.out.println("Opção inválida!");
+                    System.out.println(Cores.VERMELHO + "[Erro1] " + Cores.RESET
+                            + "Opção inválida!");
             }
         }
     }
@@ -46,22 +47,18 @@ public class Menu {
         System.out.println("\n===== Informações iniciais ======");
         System.out.print("Digite o nome do seu Campeonato: ");
         String nome = scanner.nextLine();
-        int diasDescanso = lerInteiro("Dias de descanso: ");
+        int diasDescanso = 0;
+        LocalDate dataI = null;
+        LocalDate dataF;
+        int numTimes;
 
-        LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
-
-        LocalDate dataF = lerDataFim("Data de fim (AAAA-MM-DD): ",dataI);
-
-        int numTimes = lerInteiro("Qual a quantidade de times desejados: ");
-
-        int timesEfetivos = (numTimes % 2 != 0) ? numTimes + 1 : numTimes; //Considera o numero impar com o time fantasma
-
-        int numRodadas = (timesEfetivos - 1) * 2;
-        int diasNecessarios = numRodadas * diasDescanso;
-
-        if (!validarPeriodo(dataI,dataF,diasNecessarios)){
-            System.out.println("Periodo de Tempo insuficiente");
-            return;
+        var flag = false;
+        while (!flag) { // loop de validação das entradas
+            diasDescanso = lerInteiro("Dias de descanso: ");
+            dataI = lerData("Data de inicio (AAAA-MM-DD): ");
+            dataF = lerData("Data de término (AAAA-MM-DD): ");
+            numTimes = lerInteiro("Qual a quantidade de times desejados: ");
+            if (validarDadosCampeonato(diasDescanso, dataI, dataF, numTimes, false)) {flag = true;}
         }
 
         CampeonatoPontosCorridos campeonato = new CampeonatoPontosCorridos(nome, diasDescanso, dataI);
@@ -82,12 +79,14 @@ public class Menu {
                         campeonato.gerarConfrontos();
                         System.out.println("Confrontos gerados com sucesso!");
                     } catch (TimesInsuficientesException e) {
-                        System.out.println("Erro: " + e.getMessage());
+                        System.out.println(Cores.VERMELHO + "[Erro2] " + Cores.RESET
+                                +  e.getMessage());
                     }
                     break;
                 case 4:
                     if (campeonato.getConfrontos() == null || campeonato.getConfrontos().isEmpty()) {
-                        System.out.println("Nenhum confronto gerado ainda.");
+                        System.out.println(Cores.VERMELHO + "[Erro3] " + Cores.RESET
+                                + "Nenhum confronto gerado ainda.");
                     } else {
                         System.out.println("--- Rodadas Agendadas ---");
                         campeonato.getConfrontos().forEach(System.out::println);
@@ -102,37 +101,33 @@ public class Menu {
                 case 0:
                     return;
                 default:
-                    System.out.println("Opção inválida.");
+                    System.out.println(Cores.VERMELHO + "[Erro1] " + Cores.RESET
+                            + "Opção inválida.");
             }
         }
     }
 
-    protected void loopMataMata(){
+    protected void loopMataMata() {
         System.out.println("\n===== Informações iniciais ======");
         System.out.print("Digite o nome do seu Campeonato: ");
         String nome = scanner.nextLine();
-        int diasDescanso = lerInteiro("Dias de descanso: ");
+        int diasDescanso = 0;
+        LocalDate dataI = LocalDate.now();
+        LocalDate dataF = LocalDate.now();
+        int numTimes = 0;
 
-        LocalDate dataI = lerData("Data de inicio (AAAA-MM-DD): ");
-
-        LocalDate dataF = lerDataFim("Data de fim (AAAA-MM-DD): ",dataI);
-
-        int numTimes = lerInteiro("Qual a quantidade de times desejados: ");
-
-        if ((numTimes & (numTimes - 1)) != 0) {
-            System.out.println("Mata-Mata exige potência de 2! (2, 4, 8, 16...)");
-            return;
+        var flag = false;
+        while (!flag) { // loop de validação das entradas
+            diasDescanso = lerInteiro("Dias de descanso: ");
+            dataI = lerData("Data de inicio (AAAA-MM-DD): ");
+            dataF = lerData("Data de término (AAAA-MM-DD): ");
+            numTimes = lerInteiro("Qual a quantidade de times desejados: ");
+            if (validarDadosCampeonato(diasDescanso, dataI, dataF, numTimes, true)) {
+                flag = true;
+            }
         }
 
-        int numFases = (int) (Math.log(numTimes) / Math.log(2));
-        int diasNecessarios = numFases * diasDescanso;
-
-        if (!validarPeriodo(dataI,dataF,diasNecessarios)){
-            System.out.println("Periodo de tempo insuficiente");
-            return;
-        }
-
-        CampeonatoMataMata campeonato = new CampeonatoMataMata(nome, diasDescanso, dataI,dataF);
+        CampeonatoMataMata campeonato = new CampeonatoMataMata(nome, diasDescanso, dataI, dataF);
         int faseAtual = 1;
 
         while (true) {
@@ -155,14 +150,17 @@ public class Menu {
                         new SchedulingService().agendarPartidas(campeonato);
                         System.out.println("Confrontos gerados e agendados com sucesso!");
                     } catch (TimesInsuficientesException e) {
-                        System.out.println("Erro: " + e.getMessage());
-                    }catch (CampeonatoRuntimeException e){
-                        System.out.println("Erro no agendamento: " + e.getMessage());
+                        System.out.println(Cores.VERMELHO + "[Erro2] " + Cores.RESET
+                                +  e.getMessage());
+                    } catch (CampeonatoRuntimeException e) {
+                        System.out.println(Cores.VERMELHO + "[Erro4] " + Cores.RESET
+                                +  e.getMessage());
                     }
                     break;
                 case 5:
                     if (campeonato.getConfrontos() == null || campeonato.getConfrontos().isEmpty()) {
-                        System.out.println("Nenhum confronto gerado ainda.");
+                        System.out.println(Cores.VERMELHO + "[Erro3] " + Cores.RESET
+                                + "Nenhum confronto gerado ainda.");
                     } else {
                         System.out.println("\n--- Confrontos Agendados ---\n");
                         campeonato.getConfrontos().forEach(System.out::println);
@@ -172,20 +170,22 @@ public class Menu {
                     simularFase(campeonato, faseAtual);
                     boolean encerrado = campeonato.avancarFase(faseAtual);
                     faseAtual++;
-                    if (encerrado){
+                    if (encerrado) {
                         return;
                     } else {
                         try {
                             new SchedulingService().agendarPartidas(campeonato);
                         } catch (TimesInsuficientesException | CampeonatoRuntimeException e) {
-                            System.out.println("Erro no agendamento: " + e.getMessage());
+                            System.out.println(Cores.VERMELHO + "[Erro5] " + Cores.RESET
+                                    +  e.getMessage());
                         }
                     }
                     break;
                 case 0:
                     return;
                 default:
-                    System.out.println("Opção inválida.");
+                    System.out.println(Cores.VERMELHO + "[Erro1] " + Cores.RESET
+                            + "Opção inválida.");
             }
         }
     }
@@ -198,25 +198,28 @@ public class Menu {
         String localTime = scanner.nextLine();
 
         LocalTime horarioA = lerHorario("Horário Abertura (HH:MM): ");
-        LocalTime horarioF = lerHorario("Horário Fechamento (HH:MM): ");
+        LocalTime horarioF = validarDadosCadastramento(horarioA);
 
         cp.adicionarTime(new Time(nomeTime, new Local(localTime, horarioA, horarioF)));
     }
-    private void cadastrarTimeMM(CampeonatoMataMata cp){
+
+    private void cadastrarTimeMM(CampeonatoMataMata cp) {
         System.out.print("Nome do Time: ");
         String nomeTime = scanner.nextLine();
 
-        cp.adicionarTime(new Time(nomeTime,null));
+        cp.adicionarTime(new Time(nomeTime, null));
     }
-    private void cadastrarLocalMM(CampeonatoMataMata cp){
+
+    private void cadastrarLocalMM(CampeonatoMataMata cp) {
         System.out.print("Nome do Local: ");
         String localNome = scanner.nextLine();
 
         LocalTime horarioA = lerHorario("Horário Abertura (HH:MM): ");
-        LocalTime horarioF = lerHorario("Horário Fechamento (HH:MM): ");
+        LocalTime horarioF = validarDadosCadastramento(horarioA);
 
-        cp.adicionarLocal(new Local(localNome,horarioA,horarioF));
+        cp.adicionarLocal(new Local(localNome, horarioA, horarioF));
     }
+
     private void gerarDadosTeste(CampeonatoPontosCorridos cp) {
         cp.adicionarTime(new Time("Flamengo", new Local("Maracanã", LocalTime.of(16, 0), LocalTime.of(22, 0))));
         cp.adicionarTime(new Time("Vasco", new Local("São Januário", LocalTime.of(15, 0), LocalTime.of(21, 0))));
@@ -243,7 +246,8 @@ public class Menu {
 
     private void simularCampeonato(CampeonatoPontosCorridos cp) {
         if (cp.getConfrontos() == null || cp.getConfrontos().isEmpty()) {
-            System.out.println("Gere os confrontos (opção 3) antes de simular!");
+            System.out.println(Cores.VERMELHO + "[Erro6] " + Cores.RESET
+                    + "Gere os confrontos (opção 3) antes de simular!");
             return;
         }
         Random random = new Random();
@@ -256,7 +260,8 @@ public class Menu {
 
     private void simularFase(CampeonatoMataMata cp, int faseAtual) {
         if (cp.getConfrontos() == null || cp.getConfrontos().isEmpty()) {
-            System.out.println("Gere os confrontos (opção 3) antes de simular!");
+            System.out.println(Cores.VERMELHO + "[Erro6] " + Cores.RESET
+                    + "Gere os confrontos (opção 3) antes de simular!");
             return;
         }
         Random random = new Random();
@@ -267,25 +272,25 @@ public class Menu {
                     int gols1 = random.nextInt(5);
                     int gols2 = random.nextInt(5);
 
-                    partida.encerrarPartida(gols1,gols2);
+                    partida.encerrarPartida(gols1, gols2);
 
-                    if (gols1 == gols2){
-                        int p1,p2;
+                    if (gols1 == gols2) {
+                        int p1, p2;
 
                         do {
                             p1 = random.nextInt(6) + 3;
                             p2 = random.nextInt(6) + 3;
-                        }while (p1 == p2);
+                        } while (p1 == p2);
 
                         try {
-                            partida.encerrarPenaltis(p1,p2);
+                            partida.encerrarPenaltis(p1, p2);
                         } catch (PenaltisEmpatadadosException e) {
                             throw new RuntimeException(e);
                         }
                     }
                     System.out.println(partida);
                 });
-                System.out.println("\nFase " + faseAtual + " simulada com sucesso!");
+        System.out.println("\nFase " + faseAtual + " simulada com sucesso!");
     }
 
     private void menuPontosCorridos() {
@@ -298,6 +303,7 @@ public class Menu {
         System.out.println("6. Exibir Tabela Geral");
         System.out.println("0. Voltar");
     }
+
     private void menuMataMata() {
         System.out.println("\n++++++ Menu: Mata Mata +++++++");
         System.out.println("1. Cadastrar Times");
@@ -308,16 +314,19 @@ public class Menu {
         System.out.println("6. Simular Fase Atual");
         System.out.println("0. Voltar");
     }
+
     private int lerInteiro(String mensagem) {
         while (true) {
             System.out.print(mensagem);
             try {
                 int valor = scanner.nextInt();
                 scanner.nextLine();
-                return valor;
+                if (valor >= 0) {
+                    return valor;
+                }
             } catch (InputMismatchException e) {
                 scanner.nextLine();
-                System.out.println("Digite um número válido!");
+                System.out.println(Cores.VERMELHO + "[Erro7] " + Cores.RESET + "Valor inválido. Digite um número inteiro positivo.");
             }
         }
     }
@@ -327,31 +336,13 @@ public class Menu {
             System.out.print(mensagem);
             try {
                 LocalDate data = LocalDate.parse(scanner.nextLine());
-                if (data.isBefore(LocalDate.now())){
-                    System.out.println("Data invalida, tente novamente.");
-                }else {
-                    return data;
-                }
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato inválido! Use AAAA-MM-DD");
-            }
-        }
-    }
-
-    private LocalDate lerDataFim(String mensagem,LocalDate dataInicio){
-        while (true) {
-            System.out.print(mensagem);
-            try {
-                LocalDate data = LocalDate.parse(scanner.nextLine());
                 if (data.isBefore(LocalDate.now())) {
-                    System.out.println("Data inválida! Não pode ser no passado.");
-                } else if (data.isBefore(dataInicio)) {
-                    System.out.println("Data inválida! Não pode ser anterior à data de início.");
+                    System.out.println(Cores.VERMELHO + "[Erro8] " + Cores.RESET + "Esta data esta no passado. Digite uma data válida");
                 } else {
                     return data;
                 }
             } catch (DateTimeParseException e) {
-                System.out.println("Formato inválido! Use AAAA-MM-DD");
+                System.out.println(Cores.VERMELHO + "[Erro9] " + Cores.RESET + "Formato inválido! Use AAAA-MM-DD");
             }
         }
     }
@@ -362,11 +353,50 @@ public class Menu {
             try {
                 return LocalTime.parse(scanner.nextLine());
             } catch (DateTimeParseException e) {
-                System.out.println("Formato inválido! Use HH:MM");
+                System.out.println(Cores.VERMELHO + "[Erro10] " + Cores.RESET + "Formato inválido! Use HH:MM");
             }
         }
     }
-    private boolean validarPeriodo(LocalDate dataI, LocalDate dataF, int diasNecessarios) {
-        return !dataF.isBefore(dataI.plusDays(diasNecessarios));
+
+    public boolean validarDadosCampeonato(int qdiasd, LocalDate dI, LocalDate dF, int qtimes, boolean isMM) {
+        String erro = "";
+        String initialError = Cores.VERMELHO + "[Erro";
+        int numFases = (int) (Math.log(qtimes) / Math.log(2));
+        int diasNecessarios = numFases * qdiasd;
+
+        if (qdiasd < 0 || qdiasd > 7) {erro += initialError + "11]: " + Cores.RESET + " Dias de descanso fora do limite (de até 7 dias).\n";}
+        else if (dF.isBefore(dI.plusDays(diasNecessarios))) {erro += initialError + "12]: " + Cores.RESET + " Periodo de tempo insuficiente\n";}
+        if ((qtimes & (qtimes - 1)) != 0 && isMM) {erro += initialError + "13]: " + Cores.RESET
+                + " Mata-Mata exige que a qnt. de times seja uma potência de 2! (2, 4, 8, 16...)\n";}
+        if (!dF.isAfter(dI) || !dF.isBefore(dI.plusYears(1))) {erro += initialError + "14]: " + Cores.RESET
+                + " Data de término inválida.\n";}
+
+        if (!erro.isEmpty()) {
+            erro += "\nDigite os dados novamente\n";
+            System.out.print(erro);
+            return false;
+        }
+        return true;
+    }
+
+    public LocalTime validarDadosCadastramento(LocalTime horaI) {
+        boolean horaOK = false;
+        LocalTime horaTemp = lerHorario("Horário de Fechamento (HH:MM): ");
+        while (!horaOK) {
+            LocalTime limite = horaI.plusHours(9); // Caso padrão: o intervalo está dentro do mesmo dia
+            if (limite.isAfter(horaI) && horaTemp.isAfter(horaI) && horaTemp.isBefore(limite)) {
+                horaOK = true;
+            } else if (horaTemp.isAfter(horaI) || horaTemp.isBefore(limite)) {
+                // Caso de virada: o intervalo cruza a meia-noite
+                horaOK = true;
+            }
+            else {
+                String erro = Cores.VERMELHO + "[Erro15] " + Cores.RESET
+                        + "Horário fora do escopo (de até 8 hrs após o início). Digite novamente\n";
+                System.out.println(erro);
+                horaTemp = lerHorario("Horário de Fechamento (HH:MM): ");
+            }
+        }
+        return horaTemp;
     }
 }
