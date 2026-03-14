@@ -1,0 +1,134 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-Bold.ttf');
+    font-weight: bold;
+}
+
+* {
+    -fx-font-family: 'Inter';
+}
+
+.root {
+    -fx-background-color: #F5F5F5;
+}
+
+.label {
+    -fx-text-fill: #1A1A2E;
+    -fx-font-size: 13px;
+}
+
+.label-titulo {
+    -fx-text-fill: #1A1A2E;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.label-subtitulo {
+    -fx-text-fill: #4A4A6A;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #1A1A2E;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #2D2D5E;
+}
+
+.button-voltar {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1A1A2E;
+    -fx-border-color: #1A1A2E;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.button-voltar:hover {
+    -fx-background-color: #E0E0E0;
+}
+
+.toggle-tema {
+    -fx-background-color: #DDDDDD;
+    -fx-text-fill: #1A1A2E;
+    -fx-background-radius: 20;
+    -fx-padding: 4 12 4 12;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+    -fx-text-fill: #1A1A2E;
+}
+
+.text-field:focused {
+    -fx-border-color: #1A1A2E;
+}
+
+.table-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DDDDDD;
+}
+
+.table-view .column-header {
+    -fx-background-color: #1A1A2E;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #F0F0F0;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #2D2D5E;
+}
+
+.label-chaveamento {
+    -fx-border-color: #CCCCCC;
+    -fx-padding: 4;
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1A1A2E;
+}
+
+.label-vencedor {
+    -fx-border-color: #2E7D32;
+    -fx-padding: 4;
+    -fx-font-weight: bold;
+    -fx-background-color: #E8F5E9;
+    -fx-text-fill: #1A1A2E;
+}
+
+.label-campeao {
+    -fx-border-color: #F9A825;
+    -fx-padding: 4;
+    -fx-font-weight: bold;
+    -fx-background-color: #FFF9C4;
+    -fx-text-fill: #1A1A2E;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #1A1A2E;
+}

@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import service.SchedulingService;
 import exception.TimesInsuficientesException;
 import exception.CampeonatoRuntimeException;
+import ui.util.TemaManager;
 
 public class CampeonatoController {
     @FXML private Label lblNomeCampeonato;
@@ -346,6 +347,7 @@ public class CampeonatoController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/menu.fxml"));
             Scene scene = new Scene(loader.load());
+            TemaManager.setScene(scene);
             Stage stage = (Stage) btnVoltar.getScene().getWindow();
             stage.setScene(scene);
         } catch (Exception e) {
@@ -383,44 +385,30 @@ public class CampeonatoController {
                 double yVisitante = yBase + espacamento * 0.75 - alturaLabel / 2;
                 double yMeio = yBase + espacamento * 0.5;
 
-                System.out.println("Fase " + fase + " | Confronto " + i +
-                        " | yMandante=" + yMandante +
-                        " | yVisitante=" + yVisitante +
-                        " | yMeio=" + yMeio +
-                        " | x=" + x);
-
-                // Labels
                 Label lblMandante = criarLabel(partida.getTimeMandante().getNomeTime(), x, yMandante, larguraLabel, alturaLabel);
                 Label lblVisitante = criarLabel(partida.getTimeVisitante().getNomeTime(), x, yVisitante, larguraLabel, alturaLabel);
 
-                // Linha vertical conectando os dois
-                Line linhaV = new Line(x + larguraLabel, yMandante + alturaLabel / 2, x + larguraLabel, yVisitante + alturaLabel / 2);
-                linhaV.setStroke(javafx.scene.paint.Color.GRAY);
-
-                // ← substitui a linhaH
-                Line linhaH = new Line(
-                        x + larguraLabel,
-                        yMeio,
-                        x + larguraColuna,
-                        yMeio
-                );
-                linhaH.setStroke(javafx.scene.paint.Color.GRAY);
-
-                // Destaca vencedor
+                // Destaca vencedor se partida concluída
                 if (partida.getStatus() == StatusPartida.CONCLUIDA) {
                     Time vencedor = partida.getVencedor();
                     if (vencedor == partida.getTimeMandante()) {
-                        lblMandante.setStyle("-fx-border-color: green; -fx-padding: 4; -fx-font-weight: bold; -fx-background-color: #e8f5e9;");
+                        lblMandante.getStyleClass().add("label-vencedor");
                     } else {
-                        lblVisitante.setStyle("-fx-border-color: green; -fx-padding: 4; -fx-font-weight: bold; -fx-background-color: #e8f5e9;");
+                        lblVisitante.getStyleClass().add("label-vencedor");
                     }
                 }
+
+                Line linhaV = new Line(x + larguraLabel, yMandante + alturaLabel / 2, x + larguraLabel, yVisitante + alturaLabel / 2);
+                linhaV.setStroke(javafx.scene.paint.Color.GRAY);
+
+                Line linhaH = new Line(x + larguraLabel, yMeio, x + larguraColuna, yMeio);
+                linhaH.setStroke(javafx.scene.paint.Color.GRAY);
 
                 paneChaveamento.getChildren().addAll(lblMandante, lblVisitante, linhaV, linhaH);
             }
         }
 
-        // Label do campeão na última coluna
+        // Label do campeão
         double xCampeao = numFases * larguraColuna + 10;
         double yFinalMeio = alturaTotal / 2 - alturaLabel / 2;
 
@@ -429,7 +417,7 @@ public class CampeonatoController {
                 .findFirst()
                 .ifPresent(ultima -> {
                     Label lblCampeao = criarLabel("🏆 " + ultima.getVencedor().getNomeTime(), xCampeao, yFinalMeio, larguraLabel, alturaLabel);
-                    lblCampeao.setStyle("-fx-border-color: gold; -fx-padding: 4; -fx-font-weight: bold; -fx-background-color: #fff9c4;");
+                    lblCampeao.getStyleClass().add("label-campeao");
                     paneChaveamento.getChildren().add(lblCampeao);
                 });
     }
@@ -440,7 +428,14 @@ public class CampeonatoController {
         label.setLayoutY(y);
         label.setPrefWidth(largura);
         label.setPrefHeight(altura);
-        label.setStyle("-fx-border-color: gray; -fx-padding: 4;");
+        label.getStyleClass().add("label-chaveamento");
         return label;
+    }
+    @FXML private javafx.scene.control.ToggleButton toggleTema;
+
+    @FXML
+    private void handleToggleTema() {
+        TemaManager.alternarTema();
+        toggleTema.setText(TemaManager.isTemaEscuro() ? "🌙 Escuro" : "☀ Claro");
     }
 }

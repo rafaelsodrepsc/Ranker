@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import ui.util.TemaManager;
 
 public class MenuController {
 
@@ -24,6 +25,7 @@ public class MenuController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(caminho));
             Scene scene = new Scene(loader.load());
+            TemaManager.setScene(scene);  // ← adiciona aqui
             ConfigController controller = loader.getController();
             controller.setTipo(tipo);
             Stage stage = (Stage) btnPontosCorridos.getScene().getWindow();
@@ -31,5 +33,12 @@ public class MenuController {
         } catch (Exception e) {
             System.out.println("Erro ao abrir tela: " + e.getMessage());
         }
+    }
+    @FXML private javafx.scene.control.ToggleButton toggleTema;
+
+    @FXML
+    private void handleToggleTema() {
+        TemaManager.alternarTema();
+        toggleTema.setText(TemaManager.isTemaEscuro() ? "🌙 Escuro" : "☀ Claro");
     }
 }

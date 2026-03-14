@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import model.Campeonato;
 import model.CampeonatoPontosCorridos;
 import model.CampeonatoMataMata;
+import ui.util.TemaManager;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -74,6 +75,7 @@ public class ConfigController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/campeonato.fxml"));
             Scene scene = new Scene(loader.load());
+            TemaManager.setScene(scene);
             CampeonatoController controller = loader.getController();
             controller.setCampeonato(campeonato);
             Stage stage = (Stage) txtNome.getScene().getWindow();
@@ -81,6 +83,13 @@ public class ConfigController {
         } catch (Exception e) {
             System.out.println("Erro ao abrir tela: " + e.getMessage());
         }
+    }
+    @FXML private javafx.scene.control.ToggleButton toggleTema;
+
+    @FXML
+    private void handleToggleTema() {
+        TemaManager.alternarTema();
+        toggleTema.setText(TemaManager.isTemaEscuro() ? "🌙 Escuro" : "☀ Claro");
     }
 
 }
