@@ -77,6 +77,7 @@ public class RelatorioService {
         List<Time> timesOrdenados = cp.getTimes().stream().sorted(Comparator.comparingInt(Time::getTotal_pontos) // Ordenar por ptn/vit/saldo de gols
                 .thenComparingInt(Time::getQnt_vitorias)
                 .thenComparingInt(Time::getQnt_golsPro)
+                .thenComparing(t -> Math.random())
                 .reversed()).toList();
 
         String nomeFormatado = centralizar(cp.getNome(), 89);
